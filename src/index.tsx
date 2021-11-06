@@ -3,12 +3,15 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import axios from "axios";
 import { API_URL } from "./config"
+import { BrowserRouter } from 'react-router-dom';
 
 axios.defaults.baseURL = API_URL
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );
