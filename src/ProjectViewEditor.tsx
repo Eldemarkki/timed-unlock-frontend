@@ -1,5 +1,5 @@
 import Modal from 'react-modal';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 export const ProjectViewEditor = () => {
     const { projectId } = useParams();

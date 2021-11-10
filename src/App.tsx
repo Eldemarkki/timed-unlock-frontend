@@ -1,18 +1,24 @@
-import React from 'react';
-import { LoginDialog } from './LoginDialog';
+import React, { useEffect } from 'react';
 import NotificationSystem from 'react-notification-system';
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { ProjectList } from './ProjectList';
 import { ProjectView } from "./ProjectView";
 import { ProjectViewEditor } from './ProjectViewEditor';
+import { LoginPage } from './LoginPage';
+import { PrivateRoute } from './PrivateRoute';
+import { RegisterPage } from './RegisterPage';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppState } from './store/reducer';
+import { setUserData } from './store/actionCreators';
+import { User } from './type';
 
 const App = (): JSX.Element => {
   const location = useLocation();
   let state = location.state as { backgroundLocation?: Location }
-
-  const [cookies, setCookie, removeCookie] = useCookies(['timed-unlock-token']);
+  const navigate = useNavigate();
+  const [cookies, , removeCookie] = useCookies(['timed-unlock-token']);
 
   if (cookies["timed-unlock-token"]) {
     axios.defaults.headers.common["Authorization"] = `Bearer ${cookies["timed-unlock-token"]}`
@@ -20,25 +26,44 @@ const App = (): JSX.Element => {
 
   const notificationSystem: React.RefObject<NotificationSystem.System> = React.createRef();
 
+  const showNotification = (message: string, level: "success" | "error" | "warning" | "info" | undefined) => {
+    notificationSystem.current?.addNotification({ message, level })
+  }
+
+  const isLoggedIn = Boolean(cookies["timed-unlock-token"])
+  const dispatch = useDispatch();
+  const userEmail = useSelector<AppState>(state => state.user.email);
+
+  useEffect(() => {
+    if (isLoggedIn && !userEmail) {
+      axios.get<User>("user").then(response => {
+        dispatch(setUserData({ ...response.data }));
+      }).catch(error => {
+        if (error.response.status === 401) navigate("/login");
+      })
+    }
+  }, [dispatch, isLoggedIn, userEmail, navigate])
+
   return (
     <div>
-      <div>
-        <h1>Timed-unlock</h1>
-        <button onClick={(e) => { e.preventDefault(); removeCookie("timed-unlock-token") }}>Log out</button>
-        {!cookies["timed-unlock-token"] && <LoginDialog
-          addNotification={(message, level) => notificationSystem.current?.addNotification({ message, level })}
-          onSuccessfulLogin={token => setCookie("timed-unlock-token", token, { maxAge: 4 * 60 * 60 - 20 })} />}
-      </div>
+      <h1>Timed-unlock</h1>
+      {isLoggedIn && <div>
+        <p>Logged in as {userEmail}</p>
+        <button onClick={(e) => { removeCookie("timed-unlock-token"); navigate("/login") }}>Log out</button>
+      </div>}
 
       <NotificationSystem ref={notificationSystem} />
       <Routes location={state?.backgroundLocation || location}>
-        <Route path="/" element={cookies["timed-unlock-token"] ? <ProjectList /> : null} />
-        <Route path="/projects/:projectId" element={<ProjectView />} />
+        <Route path="/login" element={<LoginPage showNotification={showNotification} />} />
+        <Route path="/register" element={<RegisterPage showNotification={showNotification} />} />
+        <PrivateRoute path="/" element={<ProjectList />} />
+        <PrivateRoute path="/projects" element={<ProjectList />} />
+        <PrivateRoute path="/projects/:projectId" element={<ProjectView />} />
       </Routes>
 
       {state?.backgroundLocation && (
         <Routes>
-          <Route path="/projects/:projectId/edit" element={<ProjectViewEditor />} />
+          <PrivateRoute path="/projects/:projectId/edit" element={<ProjectViewEditor />} />
         </Routes>
       )}
     </div >
