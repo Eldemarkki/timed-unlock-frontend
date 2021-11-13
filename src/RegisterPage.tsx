@@ -1,7 +1,11 @@
 import axios from 'axios'
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { CenteredTextH1, ColoredLink } from './components/styled/text'
+import { AuthDialogContainer, FlexWidthHeight100Centered } from './components/styled/containers'
+import { AuthEmailField, AuthPasswordField } from './components/styled/authComponents'
 import { User } from './type'
+import { Button } from './components/Button'
 
 export interface RegisterPageProps {
     showNotification: (message: string, level: "success" | "error" | "warning" | "info" | undefined) => void;
@@ -12,7 +16,7 @@ export const RegisterPage = (props: RegisterPageProps) => {
     const [password, setPassword] = useState("")
     const navigate = useNavigate();
 
-    const onLogin = async () => {
+    const onRegister = async () => {
         axios.post<User>("user/register", { email, password })
             .then(response => {
                 props.showNotification("Registered successfully!", "success");
@@ -27,12 +31,13 @@ export const RegisterPage = (props: RegisterPageProps) => {
             })
     }
 
-    return <div>
-        <input type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.currentTarget.value)} />
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.currentTarget.value)} />
-        <button onClick={onLogin}>Login</button>
-        <div>
-            <p>Already have an account? Click here to <Link to="/login">log in</Link>!</p>
-        </div>
-    </div>
+    return <FlexWidthHeight100Centered>
+        <AuthDialogContainer>
+            <CenteredTextH1>Register</CenteredTextH1>
+            <AuthEmailField type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.currentTarget.value)} />
+            <AuthPasswordField type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.currentTarget.value)} />
+            <Button colorUsage="primary" onClick={onRegister}>Register</Button>
+            <p>Already have an account? <ColoredLink to="/login">Log in!</ColoredLink></p>
+        </AuthDialogContainer>
+    </FlexWidthHeight100Centered>
 }

@@ -10,6 +10,7 @@ import { AppState, reducer } from './store/reducer';
 import { DispatchType, SetUserDataAction } from './type';
 import { applyMiddleware, createStore, Store } from 'redux';
 import thunk from 'redux-thunk';
+import "./index.css"
 
 axios.defaults.baseURL = API_URL
 

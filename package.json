@@ -25,6 +25,7 @@
     "react-redux": "^7.2.6",
     "react-router-dom": "^6.0.0",
     "react-scripts": "4.0.3",
+    "styled-components": "^5.3.3",
     "typescript": "^4.4.4",
     "web-vitals": "^1.1.2"
   },
@@ -52,6 +53,7 @@
   },
   "devDependencies": {
     "@types/react-modal": "^3.13.1",
-    "@types/react-notification-system": "^0.2.41"
+    "@types/react-notification-system": "^0.2.41",
+    "@types/styled-components": "^5.1.15"
   }
 }
