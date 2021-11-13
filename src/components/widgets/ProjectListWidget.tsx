@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { API_URL } from '../../config'
 import { Project } from '../../type'
-import { WidgetContainer } from '../styled/containers'
+import { FlexWidthHeight100Centered, WidgetContainer } from '../styled/containers'
 import { ColoredAnchor, ColoredLink, WidgetHeader } from '../styled/text'
 
 const ProjectListContainer = styled.ul`
@@ -35,15 +35,18 @@ export const ProjectListWidget = (props: ProjectListWidgetProps) => {
     return (
         <WidgetContainer>
             <WidgetHeader>Projects</WidgetHeader>
-            <ProjectListContainer>
-                {props.projects.map(project => {
-                    return <ProjectContainer key={project._id}>
-                        <ProjectName>{project.name}</ProjectName>
-                        <ViewProjectLink to={`/projects/${project._id}`}>View project</ViewProjectLink>
-                        <ColoredAnchor href={`${API_URL}projects/${project._id}/items`}>Unlocked Items API</ColoredAnchor>
-                    </ProjectContainer>
-                })}
-            </ProjectListContainer>
+            {props.projects.length === 0 ? <FlexWidthHeight100Centered>
+                <p>No projects yet</p>
+            </FlexWidthHeight100Centered> :
+                <ProjectListContainer>
+                    {props.projects.map(project => {
+                        return <ProjectContainer key={project._id}>
+                            <ProjectName>{project.name}</ProjectName>
+                            <ViewProjectLink to={`/projects/${project._id}`}>View project</ViewProjectLink>
+                            <ColoredAnchor href={`${API_URL}projects/${project._id}/items`}>Unlocked Items API</ColoredAnchor>
+                        </ProjectContainer>
+                    })}
+                </ProjectListContainer>}
         </WidgetContainer>
     )
 }

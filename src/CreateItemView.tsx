@@ -29,7 +29,15 @@ export const CreateItemView = (props: CreateItemViewProps) => {
     const createItem = () => {
         const item: NewItem = { data, unlockDate };
         axios.post<Item>(`projects/${props.projectId}/items`, item).then(response => {
-            props.onCreateItem(response.data);
+            const rawItem = response.data;
+            // Dates come as strings, so they have to be parsed
+            const parsedItem: Item = {
+                ...rawItem,
+                unlockDate: new Date(rawItem.unlockDate)
+            };
+            setData("")
+            setUnlockDate(new Date())
+            props.onCreateItem(parsedItem);
         });
     };
 

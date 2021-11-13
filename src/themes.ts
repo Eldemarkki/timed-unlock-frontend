@@ -12,7 +12,7 @@ export interface ButtonColorScheme {
 
 export const LightTheme: DefaultTheme = {
     colors: {
-        background: "#E3E3E3",
+        background: "#D7E9FF",
         foreground: "#FFFFFF",
         link: "#0066CC",
         button: {

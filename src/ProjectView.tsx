@@ -1,12 +1,34 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { API_URL } from "./config";
 import { Item, Project } from "./type";
 import "react-datetime/css/react-datetime.css";
 import { ItemList } from "./ItemList";
 import { CreateItemView } from "./CreateItemView";
-import { ColoredAnchor, ColoredLink } from "./components/styled/text";
+import { ColoredLink } from "./components/styled/text";
+import { ProjectInfo } from "./components/ProjectInfo";
+import styled from "styled-components";
+
+const SplitView = styled.div`
+    display: flex;
+    flex: 1;
+    width: 100%;
+`
+
+const LeftSide = styled.div`
+    width: 460px;
+`
+
+const RightSide = styled.div`
+    width: 100%;
+    overflow: hidden;
+`
+
+const HomeLinkContainer = styled.div`
+    margin-left: 30px;
+    margin-top: 24px;
+    font-size: 1.3rem;
+`
 
 export const ProjectView = () => {
     const { projectId } = useParams();
@@ -27,7 +49,7 @@ export const ProjectView = () => {
             })
         }
     }, [projectId]);
-    
+
     if (!project || !projectId)
         return <div>Loading...</div>;
 
@@ -48,13 +70,16 @@ export const ProjectView = () => {
         });
     }
 
-    const apiUrl = `${API_URL}projects/${projectId}/items`;
-
-    return <div>
-        <ColoredLink to="/">Back to homepage</ColoredLink>
-        <h1>{project.name}</h1>
-        <p>API URL: <ColoredAnchor href={apiUrl}>{apiUrl}</ColoredAnchor></p>
-        <CreateItemView projectId={projectId} onCreateItem={onCreateItem} />
-        <ItemList items={project.items} projectId={projectId!} onEditItem={onEditItem} />
-    </div>;
+    return <SplitView>
+        <LeftSide>
+            <HomeLinkContainer>
+                <ColoredLink to="/">Back to homepage</ColoredLink>
+            </HomeLinkContainer>
+            <ProjectInfo project={project} />
+            <CreateItemView projectId={projectId} onCreateItem={onCreateItem} />
+        </LeftSide>
+        <RightSide>
+            <ItemList items={project.items} projectId={projectId!} onEditItem={onEditItem} />
+        </RightSide>
+    </SplitView>;
 };
