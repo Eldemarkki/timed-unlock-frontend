@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import { FormTextField } from './components/forms/FormTextField'
 
 const RegistrationSchema = Yup.object().shape({
-    email: Yup.string().email("Email is invalid").required("Email is required"),
+    username: Yup.string().required("Username is required"),
     password: Yup.string().required("Password is required")
 })
 
@@ -20,14 +20,14 @@ export interface RegisterPageProps {
 export const RegisterPage = (props: RegisterPageProps) => {
     const navigate = useNavigate();
 
-    const onRegister = async (email: string, password: string) => {
-        axios.post<User>("user/register", { email, password })
+    const onRegister = async (username: string, password: string) => {
+        axios.post<User>("user/register", { username, password })
             .then(response => {
                 props.showNotification("Registered successfully!", "success");
                 navigate("/login");
             }).catch((error) => {
                 if (error.response.status === 409) {
-                    props.showNotification("A user with that email already exists. Did you mean to log in?", "error");
+                    props.showNotification("A user with that username already exists. Did you mean to log in?", "error");
                 } else {
                     props.showNotification("An error occurred", "error");
                 }
@@ -38,17 +38,17 @@ export const RegisterPage = (props: RegisterPageProps) => {
         <AuthDialogContainer>
             <CenteredTextH1>Register</CenteredTextH1>
             <Formik
-                initialValues={{ email: "", password: "" }}
+                initialValues={{ username: "", password: "" }}
                 validationSchema={RegistrationSchema}
-                onSubmit={values => onRegister(values.email, values.password)} >
+                onSubmit={values => onRegister(values.username, values.password)} >
                 {({ errors, values, setFieldValue, isValid }) =>
                     <Form>
                         <FormTextField
                             labelAsPlaceholder
-                            label="Email"
-                            onChange={newText => setFieldValue("email", newText)}
-                            error={errors.email}
-                            value={values.email}
+                            label="Username"
+                            onChange={newText => setFieldValue("username", newText)}
+                            error={errors.username}
+                            value={values.username}
                         />
                         <FormTextField
                             labelAsPlaceholder

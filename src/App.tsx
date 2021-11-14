@@ -47,17 +47,17 @@ const App = (): JSX.Element => {
 
   const isLoggedIn = Boolean(cookies["timed-unlock-token"])
   const dispatch = useDispatch();
-  const userEmail = useSelector<AppState>(state => state.user.email);
+  const username = useSelector<AppState>(state => state.user.username);
 
   useEffect(() => {
-    if (isLoggedIn && !userEmail) {
+    if (isLoggedIn && !username) {
       axios.get<User>("user").then(response => {
         dispatch(setUserData({ ...response.data }));
       }).catch(error => {
         if (error.response.status === 401) navigate("/login");
       })
     }
-  }, [dispatch, isLoggedIn, userEmail, navigate])
+  }, [dispatch, isLoggedIn, username, navigate])
 
   return (
     <ThemeProvider theme={LightTheme}>

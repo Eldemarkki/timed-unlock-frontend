@@ -44,18 +44,24 @@ const LoggedInText = styled.span`
 `
 
 export const TopBar = () => {
-    const [cookies, , removeCookie] = useCookies(['timed-unlock-token']);
+    const [cookies, setCookie , removeCookie] = useCookies(['timed-unlock-token']);
     const navigate = useNavigate();
 
-    const userEmail = useSelector<AppState>(state => state.user.email);
+    const username = useSelector<AppState>(state => state.user.username);
     const isLoggedIn = Boolean(cookies["timed-unlock-token"])
+
+    const logOut = () => {
+        setCookie("timed-unlock-token", ""); // Set it to empty, because `removeCookie` doesn't always remove it work some reason
+        removeCookie("timed-unlock-token"); 
+        navigate("/login")
+    }
 
     return (
         <Container>
             <ProjectName to="/dashboard">Timed-unlock</ProjectName>
             {isLoggedIn && <RightContainer>
-                <LoggedInText>Logged in as {userEmail}</LoggedInText>
-                <LogOutButton onClick={(e) => { removeCookie("timed-unlock-token"); navigate("/login") }}>Log out</LogOutButton>
+                <LoggedInText>Logged in as {username}</LoggedInText>
+                <LogOutButton onClick={logOut}>Log out</LogOutButton>
             </RightContainer>}
         </Container>
     )

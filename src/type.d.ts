@@ -3,7 +3,7 @@ import * as actionTypes from "./store/actionTypes";
 
 export interface LoginToken {
     token: string;
-    email: string;
+    username: string;
     id: string;
 }
 
@@ -31,7 +31,7 @@ export interface SetUserDataAction {
 }
 
 export interface User {
-    email: string;
+    username: string;
     _id: string;
 }
 

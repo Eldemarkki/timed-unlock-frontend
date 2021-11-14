@@ -2,7 +2,7 @@ import { ActionCreator } from "../type";
 import * as actionTypes from "./actionTypes";
 
 export interface User {
-    email: string;
+    username: string;
     _id: string;
 }
 
@@ -12,7 +12,7 @@ export interface AppState {
 
 const initialState: AppState = {
     user: {
-        email: "",
+        username: "",
         _id: ""
     }
 }

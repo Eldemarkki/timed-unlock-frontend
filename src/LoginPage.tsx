@@ -16,7 +16,7 @@ export interface LoginPageProps {
 }
 
 const LoginSchema = Yup.object().shape({
-    email: Yup.string().email("Email is invalid").required("Email is required"),
+    username: Yup.string().required("Username is required"),
     password: Yup.string().required("Password is required")
 })
 
@@ -26,18 +26,18 @@ export const LoginPage = ({ showNotification }: LoginPageProps) => {
 
     const dispatch = useDispatch();
 
-    const onLogin = async (email: string, password: string) => {
-        axios.post<LoginToken>("user/login", { email, password })
+    const onLogin = async (username: string, password: string) => {
+        axios.post<LoginToken>("user/login", { username, password })
             .then(response => {
                 const token = response.data.token
                 axios.defaults.headers.common["Authorization"] = `Bearer ${token}`
                 setCookie("timed-unlock-token", token, { path: "/" });
                 showNotification("Logged in successfully", "success");
-                dispatch(setUserData({ email: response.data.email, _id: response.data.id }));
+                dispatch(setUserData({ username: response.data.username, _id: response.data.id }));
                 navigate("/");
             }).catch((error) => {
                 console.log(error)
-                showNotification("Invalid email or password", "error");
+                showNotification("Invalid username or password", "error");
             })
     }
 
@@ -45,16 +45,16 @@ export const LoginPage = ({ showNotification }: LoginPageProps) => {
         <AuthDialogContainer>
             <CenteredTextH1>Login</CenteredTextH1>
             <Formik
-                initialValues={{ email: "", password: "" }}
+                initialValues={{ username: "", password: "" }}
                 validationSchema={LoginSchema}
-                onSubmit={values => onLogin(values.email, values.password)} >
+                onSubmit={values => onLogin(values.username, values.password)} >
                 {({ errors, values, setFieldValue, isValid }) => <Form>
                     <FormTextField
                         labelAsPlaceholder
-                        label="Email"
-                        onChange={newText => setFieldValue("email", newText)}
-                        error={errors.email}
-                        value={values.email}
+                        label="Username"
+                        onChange={newText => setFieldValue("username", newText)}
+                        error={errors.username}
+                        value={values.username}
                     />
                     <FormTextField
                         labelAsPlaceholder
