@@ -13,4 +13,7 @@ export const Button = styled.button<ButtonProps>`
     :hover {
         background: ${props => props.theme.colors.button[props.colorUsage || "default"].background.hover};
     }
+    :disabled {
+        background: ${props => props.theme.colors.button[props.colorUsage || "default"].background.disabled};
+    }
 `

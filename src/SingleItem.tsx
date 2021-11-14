@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import moment from "moment";
-// import { EditingButton } from "./ItemList";
 import styled from "styled-components";
 import { Item } from "./type";
 import { Button } from "./components/Button";
 import { Input } from "./components/Input";
 import Datetime from 'react-datetime';
 import axios from "axios";
+import { Form, Formik } from "formik";
+import { FormErrorNotification } from "./components/forms/FormErrorNotification";
+import * as Yup from "yup";
 
 export interface SingleItemProps {
     item: Item;
@@ -16,11 +18,8 @@ export interface SingleItemProps {
 const SingleItemViewContainer = styled.div<SingleItemViewContainerProps>`
     padding: 10px;
     max-width: 100%;
-    //border-radius: 10px;    
     display: flex;
     flex-direction: row;
-    //justify-content: space-between;
-    //background-color: ${props => props.unlocked ? props.theme.colors.items.unlockDatePassed : props.theme.colors.items.unlockDateUpcoming}; 
     background-color: white;
 
 `
@@ -45,10 +44,16 @@ const UnlockDate = styled.span`
     white-space: nowrap;
 `
 
-const UnlockTimeAgo = styled.span`
+interface UnlockTimeAge {
+    isUnlocked?: boolean | undefined;
+}
+
+const UnlockTimeAgo = styled.span<UnlockTimeAge>`
     margin-right: 20px;
     white-space: nowrap;
     flex-grow: 1;
+    padding: 6px 10px;
+    ${props => props.isUnlocked !== undefined ? ("background-color: " + (props.isUnlocked ? props.theme.colors.unlockedBackgroundColor : props.theme.colors.lockedBackgroundColor)) : ""}
 `
 
 const Separator = styled.div`
@@ -91,8 +96,13 @@ const RightSide = styled.div`
     align-items: center;
 `
 
+const EditItemValidationSchema = Yup.object().shape({
+    editingItemData: Yup.string().required("Item data is required"),
+    editingItemUnlockDate: Yup.date().required("Unlock date is required")
+})
+
 export const SingleItem = (props: SingleItemProps) => {
-    const [editingItem, setEditingItem] = useState<Item | undefined>(undefined);
+    const [isEditing, setIsEditing] = useState(false);
     const item = props.item;
 
     const [dateState, setDateState] = useState(new Date());
@@ -106,9 +116,14 @@ export const SingleItem = (props: SingleItemProps) => {
 
     const txt = moment(item.unlockDate).fromNow();
 
-    const saveEditingItem = () => {
-        axios.put<Item>(`projects/${item.project}/items/${editingItem?._id}`, editingItem).then(response => {
-            setEditingItem(undefined);
+    const saveEditingItem = (newItemData: string, newUnlockDate: Date) => {
+        const editingItem = {
+            itemData: newItemData,
+            unlockDate: newUnlockDate
+        }
+
+        axios.put<Item>(`projects/${item.project}/items/${props.item._id}`, editingItem).then(response => {
+            setIsEditing(false);
             const rawItem = response.data;
             // Dates come as strings, so they have to be parsed
             const parsedItem: Item = {
@@ -119,25 +134,35 @@ export const SingleItem = (props: SingleItemProps) => {
         });
     };
 
-    if (editingItem) {
+    if (isEditing) {
         return <EditingContainer>
             <EditingProjectData>{item.data}</EditingProjectData>
-            <EditDataRow>
-                <EditLabel>Item data</EditLabel>
-                <Input type="textarea" placeholder="Item data" value={editingItem.data} onChange={e => setEditingItem({ ...editingItem, data: e.target.value })} />
-            </EditDataRow>
-            <EditDataRow>
-                <EditLabel>Unlock time</EditLabel>
-                <DatetimeContainer>
-                    <Datetime
-                        initialValue={moment(editingItem.unlockDate)}
-                        onChange={d => setEditingItem({ ...editingItem, unlockDate: moment(d).toDate() })} />
-                </DatetimeContainer>
-            </EditDataRow>
-            <div>
-                <EditButton onClick={() => setEditingItem(undefined)}>Cancel</EditButton>
-                <EditButton onClick={saveEditingItem} colorUsage="primary">Save</EditButton>
-            </div>
+            <Formik
+                initialValues={{ editingItemData: props.item.data, editingItemUnlockDate: props.item.unlockDate }}
+                validationSchema={EditItemValidationSchema}
+                onSubmit={values => saveEditingItem(values.editingItemData, values.editingItemUnlockDate)}
+            >
+                {({ errors, values, setFieldValue, isValid }) => <Form>
+                    <EditDataRow>
+                        <EditLabel>Item data</EditLabel>
+                        <Input type="textarea" placeholder="Item data" value={values.editingItemData} onChange={e => setFieldValue("editingItemData", e.target.value)} hasErrors={Boolean(errors.editingItemData)} />
+                        <FormErrorNotification error={errors.editingItemData} />
+                    </EditDataRow>
+                    <EditDataRow>
+                        <EditLabel>Unlock time</EditLabel>
+                        <DatetimeContainer>
+                            <Datetime
+                                initialValue={moment(values.editingItemUnlockDate)}
+                                onChange={d => setFieldValue("editingItemUnlockDate", moment(d).toDate())} />
+                        </DatetimeContainer>
+                        <FormErrorNotification error={errors.editingItemUnlockDate ? "Unlock date is required" : undefined} />
+                    </EditDataRow>
+                    <div>
+                        <EditButton type="button" onClick={() => setIsEditing(false)}>Cancel</EditButton>
+                        <EditButton type="submit" colorUsage="primary" disabled={!isValid}>Save</EditButton>
+                    </div>
+                </Form>}
+            </Formik>
         </EditingContainer>
     }
 
@@ -146,8 +171,8 @@ export const SingleItem = (props: SingleItemProps) => {
             <ProjectData title={item.data}>{item.data}</ProjectData>
             <RightSide>
                 <UnlockDate>Unlocks at {item.unlockDate.toLocaleString()}</UnlockDate>
-                <UnlockTimeAgo>{hourDifference < 0 ? `Unlocked ${txt}` : `Unlocks ${txt}`}</UnlockTimeAgo>
-                <Button onClick={() => setEditingItem(item)}>Edit</Button>
+                <UnlockTimeAgo isUnlocked={hourDifference < 0}>{hourDifference < 0 ? `Unlocked ${txt}` : `Unlocks ${txt}`}</UnlockTimeAgo>
+                <Button onClick={() => setIsEditing(true)}>Edit</Button>
             </RightSide>
         </Separator>
     </SingleItemViewContainer>;

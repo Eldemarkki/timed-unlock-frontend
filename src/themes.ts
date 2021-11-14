@@ -6,6 +6,7 @@ export interface ButtonColorScheme {
     background: {
         default: string;
         hover: string;
+        disabled: string;
     }
     outline: string;
 }
@@ -19,14 +20,16 @@ export const LightTheme: DefaultTheme = {
             default: {
                 background: {
                     default: "#FFFFFF00",
-                    hover: "#FFFFFF"
+                    hover: "#FFFFFF",
+                    disabled: "#D2D2D2"
                 },
                 outline: "black"
             },
             primary: {
                 background: {
                     default: "#bfd4ff",
-                    hover: "#a9bbdf"
+                    hover: "#a9bbdf",
+                    disabled: "#D2D2D2"
                 },
                 outline: "#415784"
             }
@@ -35,6 +38,10 @@ export const LightTheme: DefaultTheme = {
             unlockDateUpcoming: "#F67575",
             unlockDatePassed: "#A7DF70",
             editing: "#FFFFFF"
-        }
+        },
+        formErrorNotification: "#FF3030",
+        formErrorBackground: "#FFA0A0A0",
+        unlockedBackgroundColor: "#56f956",
+        lockedBackgroundColor: "#ff6d6d"
     }
 }

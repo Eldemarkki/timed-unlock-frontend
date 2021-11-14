@@ -12,7 +12,11 @@ declare module "styled-components" {
                 unlockDateUpcoming: string;
                 unlockDatePassed: string;
                 editing: string;
-            }
+            },
+            formErrorNotification: string;
+            formErrorBackground: string;
+            unlockedBackgroundColor: string,
+            lockedBackgroundColor: string;
         }
     }
 }

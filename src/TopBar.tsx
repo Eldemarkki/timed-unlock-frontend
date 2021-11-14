@@ -36,6 +36,10 @@ const ProjectName = styled(Link)`
     color: inherit;
 `
 
+const LoggedInText = styled.span`
+    white-space: nowrap;
+`
+
 export const TopBar = () => {
     const [cookies, , removeCookie] = useCookies(['timed-unlock-token']);
     const navigate = useNavigate();
@@ -47,7 +51,7 @@ export const TopBar = () => {
         <Container>
             <ProjectName to="/dashboard">Timed-unlock</ProjectName>
             {isLoggedIn && <RightContainer>
-                <p>Logged in as {userEmail}</p>
+                <LoggedInText>Logged in as {userEmail}</LoggedInText>
                 <LogOutButton onClick={(e) => { removeCookie("timed-unlock-token"); navigate("/login") }}>Log out</LogOutButton>
             </RightContainer>}
         </Container>
