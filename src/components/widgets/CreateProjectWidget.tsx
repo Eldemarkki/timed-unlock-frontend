@@ -1,14 +1,12 @@
 import axios from 'axios';
-import React from 'react'
 import { WidgetContainer } from '../styled/containers';
 import { WidgetHeader } from '../styled/text';
 import { Project } from "../../type"
 import styled from 'styled-components';
 import { Button } from '../Button';
-import { Input } from '../Input';
 import { Form, Formik } from 'formik';
 import * as Yup from "yup";
-import { FormErrorNotification } from '../forms/FormErrorNotification';
+import { FormTextField } from '../forms/FormTextField';
 
 interface CreateProjectViewProps {
     onCreateProject: (project: Project) => void;
@@ -21,8 +19,6 @@ const CreateButton = styled(Button)`
 const CreateProjectValidationSchema = Yup.object().shape({
     projectName: Yup.string().required("Project name is required")
 })
-
-const FormField = styled.div``
 
 export const InputLabel = styled.span`
     display: block;
@@ -49,13 +45,13 @@ export const CreateProjectView = (props: CreateProjectViewProps) => {
                 validationSchema={CreateProjectValidationSchema}
                 onSubmit={values => createProject(values.projectName)} >
                 {({ errors, values, setFieldValue, isValid }) => <Form>
-                    <FormFieldContainer>
-                        <FormField>
-                            <InputLabel>Project name</InputLabel>
-                            <Input required type="text" placeholder="Project name" onChange={e => setFieldValue("projectName", e.target.value)} value={values.projectName} hasErrors={Boolean(errors.projectName)} />
-                        </FormField>
-                        <FormErrorNotification error={errors.projectName} />
-                    </FormFieldContainer>
+                    <FormTextField
+                        labelAsPlaceholder
+                        label="Project name"
+                        onChange={newText => setFieldValue("projectName", newText)}
+                        error={errors.projectName}
+                        value={values.projectName}
+                    />
                     <CreateButton type="submit" colorUsage="primary" disabled={!isValid}>Create</CreateButton>
                 </Form>}
             </Formik>

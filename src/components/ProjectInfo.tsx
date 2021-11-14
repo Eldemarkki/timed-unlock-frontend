@@ -15,6 +15,8 @@ const Paragraph = styled.p`
 
 const ProjectName = styled.h1`
     margin: 15px 0px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `
 
 export const ProjectInfo = (props: ProjectInfoProps) => {
@@ -37,7 +39,7 @@ export const ProjectInfo = (props: ProjectInfoProps) => {
 
     return (
         <WidgetContainer>
-            <ProjectName>{project.name}</ProjectName>
+            <ProjectName title={project.name}>{project.name}</ProjectName>
             <Paragraph>API URL: <ColoredAnchor href={apiUrl}>{apiUrl}</ColoredAnchor></Paragraph>
             <Paragraph>{itemCount} {getItemWordForCount(itemCount)} ({publicItemCount} public / {privateItemCount} private)</Paragraph>
         </WidgetContainer>

@@ -19,8 +19,8 @@ export const LightTheme: DefaultTheme = {
         button: {
             default: {
                 background: {
-                    default: "#FFFFFF00",
-                    hover: "#FFFFFF",
+                    default: "#FFFFFF",
+                    hover: "#F1F1F1",
                     disabled: "#D2D2D2"
                 },
                 outline: "black"

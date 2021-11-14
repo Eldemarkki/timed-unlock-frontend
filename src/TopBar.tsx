@@ -21,6 +21,7 @@ const RightContainer = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
+    overflow: hidden;
 `
 
 const LogOutButton = styled(Button)`
@@ -38,6 +39,8 @@ const ProjectName = styled(Link)`
 
 const LoggedInText = styled.span`
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `
 
 export const TopBar = () => {

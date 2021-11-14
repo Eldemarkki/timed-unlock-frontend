@@ -14,6 +14,8 @@ const ProjectListContainer = styled.ul`
 
 const ProjectContainer = styled.li`
     min-height: 30px;
+    display: flex;
+    align-items: center;
 `
 
 const ProjectName = styled.span`
@@ -21,10 +23,18 @@ const ProjectName = styled.span`
     margin: 0px 20px 0px 0px;
     font-size: 1.2rem;
     font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `
 
 const ViewProjectLink = styled(ColoredLink)`
     margin-right: 20px;
+    white-space: nowrap;
+`
+
+const ApiLink = styled(ColoredAnchor)`
+    white-space: nowrap;
 `
 
 export interface ProjectListWidgetProps {
@@ -43,7 +53,7 @@ export const ProjectListWidget = (props: ProjectListWidgetProps) => {
                         return <ProjectContainer key={project._id}>
                             <ProjectName>{project.name}</ProjectName>
                             <ViewProjectLink to={`/projects/${project._id}`}>View project</ViewProjectLink>
-                            <ColoredAnchor href={`${API_URL}projects/${project._id}/items`}>Unlocked Items API</ColoredAnchor>
+                            <ApiLink href={`${API_URL}projects/${project._id}/items`}>Unlocked Items API</ApiLink>
                         </ProjectContainer>
                     })}
                 </ProjectListContainer>}

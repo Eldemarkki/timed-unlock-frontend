@@ -3,12 +3,12 @@ import moment from "moment";
 import styled from "styled-components";
 import { Item } from "./type";
 import { Button } from "./components/Button";
-import { Input } from "./components/Input";
 import Datetime from 'react-datetime';
 import axios from "axios";
 import { Form, Formik } from "formik";
-import { FormErrorNotification } from "./components/forms/FormErrorNotification";
 import * as Yup from "yup";
+import { FormTextField } from "./components/forms/FormTextField";
+import { CustomFormField } from "./components/forms/CustomFormField";
 
 export interface SingleItemProps {
     item: Item;
@@ -21,7 +21,6 @@ const SingleItemViewContainer = styled.div<SingleItemViewContainerProps>`
     display: flex;
     flex-direction: row;
     background-color: white;
-
 `
 
 interface SingleItemViewContainerProps {
@@ -73,14 +72,6 @@ const EditingProjectData = styled(ProjectData)`
     margin-bottom: 10px;
 `
 
-const EditLabel = styled.span`
-    margin-right: 15px;
-`
-
-const EditDataRow = styled.div`
-    margin-bottom: 15px;
-`
-
 const DatetimeContainer = styled.div`
     display: inline-block;
     max-width: 200px;
@@ -118,7 +109,7 @@ export const SingleItem = (props: SingleItemProps) => {
 
     const saveEditingItem = (newItemData: string, newUnlockDate: Date) => {
         const editingItem = {
-            itemData: newItemData,
+            data: newItemData,
             unlockDate: newUnlockDate
         }
 
@@ -143,20 +134,19 @@ export const SingleItem = (props: SingleItemProps) => {
                 onSubmit={values => saveEditingItem(values.editingItemData, values.editingItemUnlockDate)}
             >
                 {({ errors, values, setFieldValue, isValid }) => <Form>
-                    <EditDataRow>
-                        <EditLabel>Item data</EditLabel>
-                        <Input type="textarea" placeholder="Item data" value={values.editingItemData} onChange={e => setFieldValue("editingItemData", e.target.value)} hasErrors={Boolean(errors.editingItemData)} />
-                        <FormErrorNotification error={errors.editingItemData} />
-                    </EditDataRow>
-                    <EditDataRow>
-                        <EditLabel>Unlock time</EditLabel>
+                    <FormTextField
+                        label="Item data"
+                        labelAsPlaceholder
+                        onChange={newText => setFieldValue("editingItemData", newText)}
+                        value={values.editingItemData}
+                        error={errors.editingItemData} />
+                    <CustomFormField label="Unlock time" error={errors.editingItemUnlockDate ? "Unlock date is required" : undefined}>
                         <DatetimeContainer>
                             <Datetime
                                 initialValue={moment(values.editingItemUnlockDate)}
                                 onChange={d => setFieldValue("editingItemUnlockDate", moment(d).toDate())} />
                         </DatetimeContainer>
-                        <FormErrorNotification error={errors.editingItemUnlockDate ? "Unlock date is required" : undefined} />
-                    </EditDataRow>
+                    </CustomFormField>
                     <div>
                         <EditButton type="button" onClick={() => setIsEditing(false)}>Cancel</EditButton>
                         <EditButton type="submit" colorUsage="primary" disabled={!isValid}>Save</EditButton>
