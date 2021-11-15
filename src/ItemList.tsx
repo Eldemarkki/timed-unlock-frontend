@@ -7,6 +7,7 @@ export interface ItemListProps {
     items: Item[],
     projectId: string;
     onEditItem: (item: Item) => void;
+    onDeleteItem: (projectId: string) => void;
 }
 
 const Container = styled.div`
@@ -29,9 +30,9 @@ export const ItemList = (props: ItemListProps) => {
             <ItemListContainer>
                 {sortedItems.map(item => {
                     return <li key={item._id} style={{ marginBottom: 5 }}>
-                        <SingleItem item={item} onEditItem={props.onEditItem} />
+                        <SingleItem item={item} onEditItem={props.onEditItem} onDeleteItem={() => props.onDeleteItem(item._id)} />
                     </li>
                 })}
-            </ItemListContainer> }
+            </ItemListContainer>}
     </Container>;
 };

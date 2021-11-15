@@ -1,6 +1,6 @@
 import { DefaultTheme } from "styled-components";
 
-export type ColorUsage = "primary" | "default"
+export type ColorUsage = "primary" | "default" | "warning";
 
 export interface ButtonColorScheme {
     background: {
@@ -8,6 +8,7 @@ export interface ButtonColorScheme {
         hover: string;
         disabled: string;
     }
+    text: string;
     outline: string;
 }
 
@@ -21,17 +22,28 @@ export const LightTheme: DefaultTheme = {
                 background: {
                     default: "#FFFFFF",
                     hover: "#F1F1F1",
-                    disabled: "#D2D2D2"
+                    disabled: "#D2D2D2",
                 },
+                text: "inherit",
                 outline: "black"
             },
             primary: {
                 background: {
-                    default: "#bfd4ff",
-                    hover: "#a9bbdf",
+                    default: "#242424",
+                    hover: "#444",
                     disabled: "#D2D2D2"
                 },
+                text: "white",
                 outline: "#415784"
+            },
+            warning: {
+                background: {
+                    default: "#ff4646",
+                    hover: "#c21313",
+                    disabled: "#D2D2D2"
+                },
+                text: "white",
+                outline: "black"
             }
         },
         items: {

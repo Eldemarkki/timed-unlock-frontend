@@ -70,6 +70,13 @@ export const ProjectView = () => {
         });
     }
 
+    const onDeleteItem = (itemId: string) => {
+        setProject({
+            ...project,
+            items: project.items.filter(i => i._id !== itemId)
+        })
+    }
+
     return <SplitView>
         <LeftSide>
             <HomeLinkContainer>
@@ -79,7 +86,7 @@ export const ProjectView = () => {
             <CreateItemView projectId={projectId} onCreateItem={onCreateItem} />
         </LeftSide>
         <RightSide>
-            <ItemList items={project.items} projectId={projectId!} onEditItem={onEditItem} />
+            <ItemList items={project.items} projectId={projectId!} onEditItem={onEditItem} onDeleteItem={onDeleteItem} />
         </RightSide>
     </SplitView>;
 };

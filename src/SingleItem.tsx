@@ -13,6 +13,7 @@ import { CustomFormField } from "./components/forms/CustomFormField";
 export interface SingleItemProps {
     item: Item;
     onEditItem: (newItem: Item) => void;
+    onDeleteItem: () => void;
 }
 
 const SingleItemViewContainer = styled.div<SingleItemViewContainerProps>`
@@ -125,6 +126,16 @@ export const SingleItem = (props: SingleItemProps) => {
         });
     };
 
+    const tryDeleteItem = () => {
+        if (window.confirm("Are you sure you want to delete this item? This action can not be undone")) {
+            axios.delete(`projects/${item.project}/items/${item._id}`).then(response => {
+                props.onDeleteItem();
+            }).catch(error => {
+                console.log(error)
+            })
+        }
+    }
+
     if (isEditing) {
         return <EditingContainer>
             <EditingProjectData>{item.data}</EditingProjectData>
@@ -149,6 +160,7 @@ export const SingleItem = (props: SingleItemProps) => {
                     </CustomFormField>
                     <div>
                         <EditButton type="button" onClick={() => setIsEditing(false)}>Cancel</EditButton>
+                        <EditButton type="button" colorUsage="warning" onClick={tryDeleteItem}>Delete</EditButton>
                         <EditButton type="submit" colorUsage="primary" disabled={!isValid}>Save</EditButton>
                     </div>
                 </Form>}
