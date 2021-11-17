@@ -36,7 +36,7 @@ export const ProjectView = () => {
 
     useEffect(() => {
         if (projectId) {
-            axios.get<Project>(`/projects/${projectId}`).then(response => {
+            axios.get<Project>(`projects/${projectId}`).then(response => {
                 const rawProject = response.data;
 
                 // Dates come as strings, so they have to be parsed
