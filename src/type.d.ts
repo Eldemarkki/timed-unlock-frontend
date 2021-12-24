@@ -1,5 +1,4 @@
 import { ActionCreator } from "redux";
-import * as actionTypes from "./store/actionTypes";
 
 export interface LoginToken {
     token: string;

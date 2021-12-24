@@ -1,4 +1,4 @@
-import "styled-components"
+import "styled-components";
 import { ButtonColorScheme, ColorUsage } from "./themes";
 
 declare module "styled-components" {

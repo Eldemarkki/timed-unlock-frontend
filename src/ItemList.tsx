@@ -17,22 +17,22 @@ const Container = styled.div`
 const ItemListContainer = styled.ul`
     list-style-type: none;
     padding: 10px;
-`
+`;
 
-export const ItemList = (props: ItemListProps) => {
-    const sortedItems = props.items.sort((a, b) => new Date(b.unlockDate).getTime() - new Date(a.unlockDate).getTime());
+export const ItemList = (props: ItemListProps): JSX.Element => {
+  const sortedItems = props.items.sort((a, b) => new Date(b.unlockDate).getTime() - new Date(a.unlockDate).getTime());
 
-    return <Container>
-        <h2>Items</h2>
-        {props.items.length === 0 ? <FlexWidthHeight100Centered>
-            <p>No items yet</p>
-        </FlexWidthHeight100Centered> :
-            <ItemListContainer>
-                {sortedItems.map(item => {
-                    return <li key={item._id} style={{ marginBottom: 5 }}>
-                        <SingleItem item={item} onEditItem={props.onEditItem} onDeleteItem={() => props.onDeleteItem(item._id)} />
-                    </li>
-                })}
-            </ItemListContainer>}
-    </Container>;
+  return <Container>
+    <h2>Items</h2>
+    {props.items.length === 0 ? <FlexWidthHeight100Centered>
+      <p>No items yet</p>
+    </FlexWidthHeight100Centered> :
+      <ItemListContainer>
+        {sortedItems.map(item => {
+          return <li key={item._id} style={{ marginBottom: 5 }}>
+            <SingleItem item={item} onEditItem={props.onEditItem} onDeleteItem={() => props.onDeleteItem(item._id)} />
+          </li>;
+        })}
+      </ItemListContainer>}
+  </Container>;
 };

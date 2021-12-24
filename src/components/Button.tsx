@@ -18,4 +18,4 @@ export const Button = styled.button<ButtonProps>`
     :disabled {
         background: ${props => props.theme.colors.button[props.colorUsage || "default"].background.disabled};
     }
-`
+`;
