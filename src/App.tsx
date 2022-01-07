@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import NotificationSystem from "react-notification-system";
 import { useCookies } from "react-cookie";
 import axios from "axios";
 import { Routes, Route, useNavigate } from "react-router-dom";
@@ -16,6 +15,7 @@ import styled, { ThemeProvider } from "styled-components";
 import { DashboardPage } from "./components/DashboardPage";
 import { Redirect } from "./utils/Redirect";
 import { LightTheme } from "./themes";
+import { NotificationsProvider } from "@mantine/notifications";
 
 const ApplicationContainer = styled.div`
   min-height: 100vh;
@@ -39,12 +39,6 @@ const App = (): JSX.Element => {
     axios.defaults.headers.common["Authorization"] = `Bearer ${cookies["timed-unlock-token"]}`;
   }
 
-  const notificationSystem: React.RefObject<NotificationSystem.System> = React.createRef();
-
-  const showNotification = (message: string, level: "success" | "error" | "warning" | "info" | undefined) => {
-    notificationSystem.current?.addNotification({ message, level });
-  };
-
   const isLoggedIn = Boolean(cookies["timed-unlock-token"]);
   const dispatch = useDispatch();
   const username = useSelector<AppState>(state => state.user.username);
@@ -61,22 +55,24 @@ const App = (): JSX.Element => {
 
   return (
     <ThemeProvider theme={LightTheme}>
-      <ApplicationContainer>
-        <TopBar />
-        <NotificationSystem ref={notificationSystem} />
-        <PageContainer>
-          <Routes>
-            <Route path="/login" element={<LoginPage showNotification={showNotification} />} />
-            <Route path="/register" element={<RegisterPage showNotification={showNotification} />} />
-            <PrivateRoute path="/" element={<Redirect to="/dashboard" />} />
-            <PrivateRoute path="/dashboard" element={<DashboardPage />} />
-            <PrivateRoute path="/projects/:projectId" element={<ProjectView />} />
+      <NotificationsProvider>
 
-            {/* If not page was found for the URL, it should go to the dashboard */}
-            <Route path="*" element={<Redirect to="/dashboard" />} />
-          </Routes>
-        </PageContainer>
-      </ApplicationContainer >
+        <ApplicationContainer>
+          <TopBar />
+          <PageContainer>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <PrivateRoute path="/" element={<Redirect to="/dashboard" />} />
+              <PrivateRoute path="/dashboard" element={<DashboardPage />} />
+              <PrivateRoute path="/projects/:projectId" element={<ProjectView />} />
+
+              {/* If not page was found for the URL, it should go to the dashboard */}
+              <Route path="*" element={<Redirect to="/dashboard" />} />
+            </Routes>
+          </PageContainer>
+        </ApplicationContainer >
+      </NotificationsProvider>
     </ThemeProvider>
   );
 };

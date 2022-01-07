@@ -10,19 +10,17 @@ import { Button } from "./components/Button";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { FormTextField } from "./components/forms/FormTextField";
-
-export interface LoginPageProps {
-    showNotification: (message: string, level: "success" | "error" | "warning" | "info" | undefined) => void;
-}
+import { useNotifications } from "@mantine/notifications";
 
 const LoginSchema = Yup.object().shape({
   username: Yup.string().required("Username is required"),
   password: Yup.string().required("Password is required")
 });
 
-export const LoginPage = ({ showNotification }: LoginPageProps): JSX.Element => {
+export const LoginPage = (): JSX.Element => {
   const [, setCookie] = useCookies(["timed-unlock-token"]);
   const navigate = useNavigate();
+  const notifications = useNotifications();
 
   const dispatch = useDispatch();
 
@@ -32,12 +30,12 @@ export const LoginPage = ({ showNotification }: LoginPageProps): JSX.Element => 
         const token = response.data.token;
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         setCookie("timed-unlock-token", token, { path: "/" });
-        showNotification("Logged in successfully", "success");
+        notifications.showNotification({ message: "Logged in successfully", color: "green" });
         dispatch(setUserData({ username: response.data.username, _id: response.data.id }));
         navigate("/");
       }).catch((error) => {
         console.log(error);
-        showNotification("Invalid username or password", "error");
+        notifications.showNotification({ message: "Invalid username or password", color: "red" });
       });
   };
 

@@ -7,29 +7,28 @@ import { Button } from "./components/Button";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { FormTextField } from "./components/forms/FormTextField";
+import { useNotifications } from "@mantine/notifications";
 
 const RegistrationSchema = Yup.object().shape({
   username: Yup.string().required("Username is required"),
   password: Yup.string().required("Password is required")
 });
 
-export interface RegisterPageProps {
-  showNotification: (message: string, level: "success" | "error" | "warning" | "info" | undefined) => void;
-}
-
-export const RegisterPage = (props: RegisterPageProps): JSX.Element => {
+export const RegisterPage = (): JSX.Element => {
   const navigate = useNavigate();
+
+  const notifications = useNotifications();
 
   const onRegister = async (username: string, password: string) => {
     axios.post<User>("user/register", { username, password })
       .then(() => {
-        props.showNotification("Registered successfully!", "success");
+        notifications.showNotification({ message: "Registered successfully!", color: "green" });
         navigate("/login");
       }).catch((error) => {
         if (error.response.status === 409) {
-          props.showNotification("A user with that username already exists. Did you mean to log in?", "error");
+          notifications.showNotification({ message: "A user with that username already exists. Did you mean to log in?", color: "red" });
         } else {
-          props.showNotification("An error occurred", "error");
+          notifications.showNotification({ message: "An error occurred", color: "red" });
         }
       });
   };

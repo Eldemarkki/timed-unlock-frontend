@@ -51,7 +51,7 @@ export const TopBar = (): JSX.Element => {
   const isLoggedIn = Boolean(cookies["timed-unlock-token"]);
 
   const logOut = () => {
-    setCookie("timed-unlock-token", ""); // Set it to empty, because `removeCookie` doesn't always remove it work some reason
+    setCookie("timed-unlock-token", ""); // Set it to empty, because `removeCookie` doesn't always remove it for some reason
     removeCookie("timed-unlock-token"); 
     navigate("/login");
   };
