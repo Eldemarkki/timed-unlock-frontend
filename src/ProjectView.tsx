@@ -8,31 +8,41 @@ import { CreateItemView } from "./CreateItemView";
 import { ColoredLink } from "./components/styled/text";
 import { ProjectInfo } from "./components/ProjectInfo";
 import styled from "styled-components";
+import { useIsLoggedIn } from "./hooks/useIsLoggedIn";
+import { useNavigate } from "react-router";
 
 const SplitView = styled.div`
-display: flex;
-flex: 1;
-width: 100%;
+  display: flex;
+  flex: 1;
+  width: 100%;
 `;
 
 const LeftSide = styled.div`
-width: 460px;
+  width: 460px;
 `;
 
 const RightSide = styled.div`
-width: 100%;
-overflow: hidden;
+  width: 100%;
+  overflow: hidden;
 `;
 
 const HomeLinkContainer = styled.div`
-margin-left: 30px;
-margin-top: 24px;
-font-size: 1.3rem;
+  margin-left: 30px;
+  margin-top: 24px;
+  font-size: 1.3rem;
 `;
 
 export const ProjectView = (): JSX.Element => {
   const { projectId } = useParams();
   const [project, setProject] = useState<Project | undefined>(undefined);
+  const isLoggedIn = useIsLoggedIn();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+  }, []);
 
   useEffect(() => {
     if (projectId) {
@@ -50,7 +60,7 @@ export const ProjectView = (): JSX.Element => {
     }
   }, [projectId]);
 
-  if (!project || !projectId)
+  if (!project || !projectId || !isLoggedIn)
     return <div>Loading...</div>;
 
   const onEditItem = (newItem: Item) => {

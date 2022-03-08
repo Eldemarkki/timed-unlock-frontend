@@ -32,7 +32,7 @@ export const FormTextField = (props: FormTextFieldProps): JSX.Element => {
         <Input 
           type={props.type || "text"}
           placeholder={(props.labelAsPlaceholder ? props.label : props.placeholder) || ""} 
-          onChange={props.onChange ? (e => props.onChange!(e.target.value)) : undefined} 
+          onChange={e => props.onChange?.(e.target.value)} 
           hasErrors={Boolean(props.error)} 
           value={props.value}/>
       </FormField>

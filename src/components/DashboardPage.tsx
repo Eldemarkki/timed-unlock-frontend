@@ -5,10 +5,18 @@ import { CreateProjectView } from "./widgets/CreateProjectWidget";
 import { Project } from "../type";
 import { DashboardContainer } from "./styled/containers";
 import { ProjectListWidget } from "./widgets/ProjectListWidget";
+import { useIsLoggedIn } from "../hooks/useIsLoggedIn";
 
 export const DashboardPage = (): JSX.Element => {
   const [projects, setProjects] = useState<Project[]>([]);
+  const isLoggedIn = useIsLoggedIn();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+  }, []);
 
   useEffect(() => {
     axios.get<Project[]>("projects").then(response => {

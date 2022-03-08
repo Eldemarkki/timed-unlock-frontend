@@ -4,7 +4,6 @@ import axios from "axios";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { ProjectView } from "./ProjectView";
 import { LoginPage } from "./LoginPage";
-import { PrivateRoute } from "./PrivateRoute";
 import { RegisterPage } from "./RegisterPage";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "./store/reducer";
@@ -16,6 +15,7 @@ import { DashboardPage } from "./components/DashboardPage";
 import { Redirect } from "./utils/Redirect";
 import { LightTheme } from "./themes";
 import { NotificationsProvider } from "@mantine/notifications";
+import { useIsLoggedIn } from "./hooks/useIsLoggedIn";
 
 const ApplicationContainer = styled.div`
   min-height: 100vh;
@@ -30,6 +30,19 @@ const PageContainer = styled.div`
   min-height: 100%;
   flex: 1;
 `;
+
+const Index = () => {
+  const isLoggedIn = useIsLoggedIn();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+  }, []);
+
+  return <Redirect to="/dashboard" />;
+};
 
 const App = (): JSX.Element => {
   const navigate = useNavigate();
@@ -63,9 +76,9 @@ const App = (): JSX.Element => {
             <Routes>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
-              <PrivateRoute path="/" element={<Redirect to="/dashboard" />} />
-              <PrivateRoute path="/dashboard" element={<DashboardPage />} />
-              <PrivateRoute path="/projects/:projectId" element={<ProjectView />} />
+              <Route path="/" element={<Index />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/projects/:projectId" element={<ProjectView />} />
 
               {/* If not page was found for the URL, it should go to the dashboard */}
               <Route path="*" element={<Redirect to="/dashboard" />} />
